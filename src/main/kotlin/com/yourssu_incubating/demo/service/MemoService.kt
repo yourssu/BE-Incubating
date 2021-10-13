@@ -13,10 +13,6 @@ import org.springframework.data.domain.Pageable
 import java.time.LocalTime
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.util.ArrayList
-
-
-
 
 @Service
 class MemoService {
@@ -49,7 +45,7 @@ class MemoService {
     }
 
     @Transactional
-    fun searchByDate(date: String, pageable: Pageable): List<MemoResponse>? {
+    fun searchByDate(date: String, pageable: Pageable): List<MemoResponse> {
         val startDate = LocalDateTime.of(LocalDate.parse(date), LocalTime.of(0, 0, 0))
         val endDate = LocalDateTime.of(LocalDate.parse(date), LocalTime.of(23, 59, 59))
 

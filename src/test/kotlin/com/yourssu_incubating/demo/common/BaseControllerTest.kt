@@ -23,7 +23,7 @@ class BaseControllerTest {
     @Autowired
     protected lateinit var memosRepository: MemosRepository
 
-    val memoId: Long = 999
+    val memoId: Long = 1
     val title = "title"
     val text = "text"
 
