@@ -2,6 +2,7 @@ package com.yourssu_incubating.demo.service
 
 import com.yourssu_incubating.demo.controller.request.SaveMemoRequest
 import com.yourssu_incubating.demo.controller.request.UpdateMemoRequest
+import com.yourssu_incubating.demo.controller.response.MemoResponse
 import com.yourssu_incubating.demo.entity.memo.Memos
 import com.yourssu_incubating.demo.entity.memo.MemosRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -12,6 +13,9 @@ import org.springframework.data.domain.Pageable
 import java.time.LocalTime
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.util.ArrayList
+
+
 
 
 @Service
@@ -45,14 +49,19 @@ class MemoService {
     }
 
     @Transactional
-    fun searchByDate(date: String, pageable: Pageable): List<Memos>? {
+    fun searchByDate(date: String, pageable: Pageable): List<MemoResponse>? {
         val startDate = LocalDateTime.of(LocalDate.parse(date), LocalTime.of(0, 0, 0))
         val endDate = LocalDateTime.of(LocalDate.parse(date), LocalTime.of(23, 59, 59))
 
         val memosList: List<Memos> = this.memoRepository.findByCreatedAtBetween(startDate, endDate, pageable)
+        var memoResponseList = mutableListOf<MemoResponse>()
 
-        if (memosList.isEmpty()) return memosList
+        if (memosList.isEmpty()) return memoResponseList
 
-        return memosList
+        for (memo: Memos in memosList) {
+            memoResponseList.add(MemoResponse(memo.id, memo.title, memo.text, memo.getStringCreatedAt(), memo.getStringUpdatedAt()))
+        }
+
+        return memoResponseList
     }
 }

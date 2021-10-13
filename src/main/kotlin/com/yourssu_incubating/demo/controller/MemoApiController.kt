@@ -43,7 +43,7 @@ class MemoApiController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    fun searchMemoWithDate(@RequestParam param: Map<String, String>, @PageableDefault(size = 5) pageable: Pageable): List<Memos>? {
+    fun searchMemoWithDate(@RequestParam param: Map<String, String>, @PageableDefault(size = 5) pageable: Pageable): List<MemoResponse>? {
         return memoService.searchByDate(param["date"]!!, pageable)
     }
 
