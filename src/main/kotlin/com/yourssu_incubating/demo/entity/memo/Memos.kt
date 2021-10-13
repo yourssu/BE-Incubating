@@ -1,15 +1,14 @@
 package com.yourssu_incubating.demo.entity.memo
 
-import org.springframework.data.annotation.CreatedDate
-import org.springframework.data.annotation.LastModifiedDate
-import java.time.LocalDateTime
+import com.yourssu_incubating.demo.entity.BaseTimeEntity
+import java.time.format.DateTimeFormatter
 import javax.persistence.*
 
 @Entity
 data class Memos (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long? = null,
+    val id: Long? = null,
 
     @Column(nullable = false)
     var title: String? = null,
@@ -17,9 +16,17 @@ data class Memos (
     @Column(nullable = false, columnDefinition = "TEXT")
     var text: String? = null,
 
-    @CreatedDate
-    var createdAt: LocalDateTime? = null,
+): BaseTimeEntity() {
+    private val pattern: String = "yyyy-MM-dd HH:mm:ss"
 
-    @LastModifiedDate
-    var updatedAt: LocalDateTime? = null,
-)
+    fun update(title: String, text: String) {
+        this.title = title;
+        this.text = text;
+    }
+    fun getStringCreatedAt(): String {
+        return createdAt!!.format(DateTimeFormatter.ofPattern(pattern))
+    }
+    fun getStringUpdatedAt(): String {
+        return updatedAt!!.format(DateTimeFormatter.ofPattern(pattern))
+    }
+}
