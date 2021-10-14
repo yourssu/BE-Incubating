@@ -22,7 +22,6 @@ class SwaggerConfig {
             .apiInfo(apiInfo())
             .select()
             .apis(RequestHandlerSelectors.basePackage("com.yourssu_incubating.demo"))
-            .paths(PathSelectors.any())
             .build()
     }
 
