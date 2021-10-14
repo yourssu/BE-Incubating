@@ -3,6 +3,7 @@ package com.yourssu_incubating.demo.controller
 import com.yourssu_incubating.demo.controller.request.SaveMemoRequest
 import com.yourssu_incubating.demo.controller.request.UpdateMemoRequest
 import com.yourssu_incubating.demo.controller.response.MemoResponse
+import com.yourssu_incubating.demo.controller.response.SearchByDateMemosResponse
 import com.yourssu_incubating.demo.entity.memo.Memos
 import com.yourssu_incubating.demo.service.MemoService
 import io.swagger.annotations.ApiOperation
@@ -43,8 +44,8 @@ class MemoApiController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    fun searchMemoWithDate(@RequestParam param: Map<String, String>, @PageableDefault(size = 5) pageable: Pageable): List<MemoResponse> {
-        return memoService.searchByDate(param["date"]!!, pageable)
+    fun searchMemoWithDate(@RequestParam param: Map<String, String>, @PageableDefault(size = 5) pageable: Pageable): SearchByDateMemosResponse {
+        return SearchByDateMemosResponse(memoService.searchByDate(param["date"]!!, pageable))
     }
 
     @DeleteMapping("/{memoId}")
@@ -52,6 +53,4 @@ class MemoApiController {
     fun deleteMemoWithMemoId(@PathVariable memoId: Long) {
         memoService.deleteMemo(memoId)
     }
-
-
 }

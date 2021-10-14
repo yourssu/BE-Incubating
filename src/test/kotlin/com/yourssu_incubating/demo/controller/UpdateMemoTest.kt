@@ -10,10 +10,8 @@ import org.springframework.test.web.servlet.put
 class UpdateMemoTest: BaseControllerTest() {
 
     @Test
-    @DisplayName("update memo")
+    @DisplayName("200: update memo")
     fun updateMemoSuccess() {
-        generateMemo()
-
         val request = UpdateMemoRequest("title", "updated Text")
         val test = mockMvc.put("/memos/{memoId}", memoId) {
             contentType = MediaType.APPLICATION_JSON
@@ -24,6 +22,21 @@ class UpdateMemoTest: BaseControllerTest() {
             status { isOk() }
             jsonPath("title") { value("title") }
             jsonPath("text") { value("updated Text") }
+        }
+    }
+
+    @Test
+    @DisplayName("404: update memo")
+    fun updateMemoFail_NOT_FOUND() {
+        val request = UpdateMemoRequest("title", "updated Text")
+
+        val test = mockMvc.put("/memos/{memoId}", memoId) {
+            contentType = MediaType.APPLICATION_JSON
+            content = objectMapper.writeValueAsString(request)
+        }
+
+        test.andExpect {
+            status { isNotFound() }
         }
     }
 }
