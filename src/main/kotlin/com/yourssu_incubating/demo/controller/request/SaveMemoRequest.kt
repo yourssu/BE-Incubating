@@ -4,10 +4,10 @@ import com.yourssu_incubating.demo.entity.memo.Memos
 import javax.validation.constraints.NotNull
 
 class SaveMemoRequest (
-    @field: NotNull
+    @field: NotNull(message = "title is must be not null")
     var title: String,
 
-    @field: NotNull
+    @field: NotNull(message = "text is must be not null")
     var text: String,
 ) {
     fun toEntity(): Memos {

@@ -26,4 +26,21 @@ class SearchByDateMemoTest: BaseControllerTest() {
             status { isOk() }
         }
     }
+
+    @Test
+    @DisplayName("400: search memos by date")
+    fun searchByDateTestFail_BAD_REQUEST() {
+        generateMemo()
+        generateMemo()
+
+        val date = "2021-10-1y"
+
+        val test = mockMvc.get("/memos?date=$date&page=0", date) {
+            contentType = MediaType.APPLICATION_JSON
+        }
+
+        test.andExpect {
+            status { isBadRequest() }
+        }
+    }
 }

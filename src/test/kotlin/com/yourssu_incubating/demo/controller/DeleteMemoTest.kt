@@ -3,9 +3,7 @@ package com.yourssu_incubating.demo.controller
 import com.yourssu_incubating.demo.common.BaseControllerTest
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.delete
-import org.springframework.test.web.servlet.post
 
 class DeleteMemoTest: BaseControllerTest() {
 

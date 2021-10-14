@@ -1,5 +1,6 @@
 package com.yourssu_incubating.demo.service
 
+import com.yourssu_incubating.demo.controller.exception.FormatInvalidException
 import com.yourssu_incubating.demo.controller.exception.MemoNotExistException
 import com.yourssu_incubating.demo.controller.request.SaveMemoRequest
 import com.yourssu_incubating.demo.controller.request.UpdateMemoRequest
@@ -48,6 +49,8 @@ class MemoService {
 
     @Transactional(readOnly = true)
     fun searchByDate(date: String, pageable: Pageable): List<MemoResponse> {
+        checkDateformat(date)
+
         val startDate = LocalDateTime.of(LocalDate.parse(date), LocalTime.of(0, 0, 0))
         val endDate = LocalDateTime.of(LocalDate.parse(date), LocalTime.of(23, 59, 59))
 
@@ -61,5 +64,12 @@ class MemoService {
         }
 
         return memoResponseList
+    }
+
+    fun checkDateformat(date: String) {
+        val regex = Regex("[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]")
+        val matchResult = regex.matches(date)
+
+        if (!matchResult) throw FormatInvalidException()
     }
 }

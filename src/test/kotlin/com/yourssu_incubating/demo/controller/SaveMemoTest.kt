@@ -10,7 +10,7 @@ import org.springframework.test.web.servlet.post
 class SaveMemoTest: BaseControllerTest() {
 
     @Test
-    @DisplayName("save memo")
+    @DisplayName("201: save memo")
     fun saveMemoSuccess() {
         val request = SaveMemoRequest("title", "text")
         val test = mockMvc.post("/memos/") {
@@ -21,6 +21,18 @@ class SaveMemoTest: BaseControllerTest() {
             status { isCreated() }
             jsonPath("title") { request.title }
             jsonPath("text") { request.text }
+        }
+    }
+
+    @Test
+    @DisplayName("400: save memo")
+    fun saveMemoFail_BAD_REQUEST() {
+        val test = mockMvc.post("/memos/") {
+            content = objectMapper.writeValueAsString("title: title")
+            contentType = MediaType.APPLICATION_JSON
+        }
+        test.andExpect {
+            status { isBadRequest() }
         }
     }
 }

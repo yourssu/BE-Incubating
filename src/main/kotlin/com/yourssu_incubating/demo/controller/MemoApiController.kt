@@ -30,7 +30,7 @@ class MemoApiController {
 
     @PutMapping("/{memoId}")
     @ResponseStatus(HttpStatus.OK)
-    fun updateMemo(@PathVariable memoId: Long, @RequestBody requestDto: UpdateMemoRequest): MemoResponse {
+    fun updateMemo(@PathVariable memoId: Long, @Valid @RequestBody requestDto: UpdateMemoRequest): MemoResponse {
         val memo: Memos = memoService.updateMemo(memoId, requestDto)
         return MemoResponse(memo.id, memo.title, memo.text, memo.getStringCreatedAt(), memo.getStringUpdatedAt())
     }
