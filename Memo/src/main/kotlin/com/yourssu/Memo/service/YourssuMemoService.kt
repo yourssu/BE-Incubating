@@ -9,8 +9,6 @@ import com.yourssu.Memo.dtos.response.ResponseShowMemoDto
 import com.yourssu.Memo.dtos.response.ResponseUpdateMemoDto
 import com.yourssu.Memo.repository.MemoRepository
 import org.springframework.stereotype.Service
-import java.time.LocalDate
-import java.time.LocalDateTime
 import java.util.*
 import javax.transaction.Transactional
 
