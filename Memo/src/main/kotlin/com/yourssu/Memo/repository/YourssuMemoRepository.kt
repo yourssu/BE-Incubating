@@ -36,7 +36,6 @@ class YourssuMemoRepository: MemoRepository {
     }
 
     override fun showByPage(searchDate: Date, page: Int): ResponseShowByPageMenuDto {
-        println("44444444444444")
         val memoList = em.createQuery(
             "select m from Memo m where m.createdAt > :searchDate",
             Memo::class.java

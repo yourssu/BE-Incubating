@@ -2,7 +2,6 @@ package com.yourssu.Memo.dtos.response
 
 import com.yourssu.Memo.domain.Memo
 import java.text.SimpleDateFormat
-import java.time.format.DateTimeFormatter
 
 val transFormat: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
 
