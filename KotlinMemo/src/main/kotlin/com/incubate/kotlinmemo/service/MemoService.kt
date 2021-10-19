@@ -11,4 +11,5 @@ interface MemoService {
     fun deleteMemo(memo_id:Long)
     fun MemoInfoByDate(date:LocalDate, page:Int): List<MemoPreviewDto>
     fun MemoInfo(memo_id: Long):MemoResponseDto
+
 }

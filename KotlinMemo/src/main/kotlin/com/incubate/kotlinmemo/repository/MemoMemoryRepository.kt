@@ -2,8 +2,6 @@ package com.incubate.kotlinmemo.repository
 
 import com.incubate.kotlinmemo.domain.Memo
 import com.incubate.kotlinmemo.dto.MemoCreateUpdateDto
-import lombok.RequiredArgsConstructor
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Repository
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -26,7 +24,6 @@ class MemoMemoryRepository(private val em:EntityManager): MemoRepository {
 
     override fun MemoInfoByDate(date: LocalDate, page: Int): List<Memo> {
         val dateTime = date.atTime(LocalTime.now())
-
         val memoList:List<Memo> = em.createQuery("select m from Memo m where m.createdAt >= :date order by m.createdAt desc", Memo::class.java)
                 .setParameter("date", dateTime)
                 .setFirstResult((page-1) * 5)
@@ -35,10 +32,10 @@ class MemoMemoryRepository(private val em:EntityManager): MemoRepository {
         return memoList
     }
 
-    override fun findById(memo_id: Long): Optional<Memo> {
+    override fun findById(memo_id: Long): Memo {
         val memo:Memo = em.find(Memo::class.java, memo_id)
 
-        return Optional.ofNullable(memo)
+        return memo
     }
 
     override fun update(memo: MemoCreateUpdateDto, id: Long): Memo {
@@ -49,4 +46,11 @@ class MemoMemoryRepository(private val em:EntityManager): MemoRepository {
         return memo1
     }
 
+    override fun validationCheck(memo:MemoCreateUpdateDto):Boolean{
+        val check:Memo = em.createQuery("select m from Memo m where m.title = :title and m.text = :text", Memo::class.java)
+            .setParameter("title", memo.title).setParameter("text",memo.text)
+            .singleResult
+        if (check == null) return false
+        else return true
+    }
 }

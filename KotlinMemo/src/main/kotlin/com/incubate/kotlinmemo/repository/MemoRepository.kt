@@ -9,6 +9,7 @@ interface MemoRepository {
     fun save(memo:Memo):Memo
     fun delete(memo_id:Long)
     fun MemoInfoByDate(date:LocalDate, page:Int):List<Memo>
-    fun findById(memo_id:Long):Optional<Memo>
+    fun findById(memo_id:Long):Memo
     fun update(memo: MemoCreateUpdateDto, id:Long):Memo
+    fun validationCheck(memo:MemoCreateUpdateDto):Boolean
 }

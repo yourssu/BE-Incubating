@@ -28,14 +28,14 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    compileOnly("org.projectlombok:lombok")
     runtimeOnly("mysql:mysql-connector-java")
-    annotationProcessor("org.projectlombok:lombok")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     implementation("io.springfox:springfox-swagger2:2.9.2")
     implementation("io.springfox:springfox-swagger-ui:2.0.2")
-
-
+    testCompileOnly ("junit:junit:4.12")
+    testRuntimeOnly ("org.junit.vintage:junit-vintage-engine:5.3.1")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:3.2.0")
+    testImplementation ("org.mockito:mockito-core:3.8.0")
 }
 
 tasks.withType<KotlinCompile> {

@@ -1,7 +1,7 @@
 package com.incubate.kotlinmemo.dto
 
 import com.incubate.kotlinmemo.domain.Memo
-import lombok.Getter
+import lombok.EqualsAndHashCode
 import java.time.format.DateTimeFormatter
 
 
