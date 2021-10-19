@@ -1,7 +1,6 @@
 package com.yourssu_incubating.demo.entity.memo
 
 import com.yourssu_incubating.demo.entity.BaseTimeEntity
-import java.time.format.DateTimeFormatter
 import javax.persistence.*
 
 @Entity

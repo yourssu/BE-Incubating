@@ -25,12 +25,13 @@ class SaveMemoTest: BaseControllerTest() {
     }
 
     @Test
-    @DisplayName("400: save memo")
+    @DisplayName("400: bad request ")
     fun saveMemoFail_BAD_REQUEST() {
         val test = mockMvc.post("/memos/") {
             content = objectMapper.writeValueAsString("title: title")
             contentType = MediaType.APPLICATION_JSON
         }
+
         test.andExpect {
             status { isBadRequest() }
         }

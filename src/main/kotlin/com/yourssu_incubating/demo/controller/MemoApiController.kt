@@ -18,10 +18,7 @@ import javax.validation.Valid
 
 @RestController
 @RequestMapping("/memos")
-class MemoApiController {
-
-    @Autowired
-    private lateinit var memoService: MemoService
+class MemoApiController(private val memoService: MemoService) {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
