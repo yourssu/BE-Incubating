@@ -17,16 +17,9 @@ data class Memos (
     var text: String? = null,
 
 ): BaseTimeEntity() {
-    private val pattern: String = "yyyy-MM-dd HH:mm:ss"
 
     fun update(title: String, text: String) {
         this.title = title;
         this.text = text;
-    }
-    fun getStringCreatedAt(): String {
-        return createdAt!!.format(DateTimeFormatter.ofPattern(pattern))
-    }
-    fun getStringUpdatedAt(): String {
-        return updatedAt!!.format(DateTimeFormatter.ofPattern(pattern))
     }
 }

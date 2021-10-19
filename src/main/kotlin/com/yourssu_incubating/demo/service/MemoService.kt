@@ -1,12 +1,12 @@
 package com.yourssu_incubating.demo.service
 
-import com.yourssu_incubating.demo.controller.exception.FormatInvalidException
 import com.yourssu_incubating.demo.controller.exception.MemoNotExistException
 import com.yourssu_incubating.demo.controller.request.SaveMemoRequest
 import com.yourssu_incubating.demo.controller.request.UpdateMemoRequest
 import com.yourssu_incubating.demo.controller.response.MemoResponse
 import com.yourssu_incubating.demo.entity.memo.Memos
 import com.yourssu_incubating.demo.entity.memo.MemosRepository
+import com.yourssu_incubating.demo.utils.FormatUtil.localDateTimeToString
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -25,7 +25,8 @@ class MemoService {
 
     @Transactional
     fun saveMemo(requestDto: SaveMemoRequest): Memos {
-        return this.memoRepository.save(requestDto.toEntity())
+        val memo = Memos(title = requestDto.title, text = requestDto.text)
+        return this.memoRepository.save(memo)
     }
 
     @Transactional
@@ -48,11 +49,9 @@ class MemoService {
     }
 
     @Transactional(readOnly = true)
-    fun searchByDate(date: String, pageable: Pageable): List<MemoResponse> {
-        checkDateformat(date)
-
-        val startDate = LocalDateTime.of(LocalDate.parse(date), LocalTime.of(0, 0, 0))
-        val endDate = LocalDateTime.of(LocalDate.parse(date), LocalTime.of(23, 59, 59))
+    fun searchByDate(date: LocalDate, pageable: Pageable): List<MemoResponse> {
+        val startDate = LocalDateTime.of(date, LocalTime.of(0, 0, 0))
+        val endDate = LocalDateTime.of(date, LocalTime.of(23, 59, 59))
 
         val memosList: List<Memos> = this.memoRepository.findByCreatedAtBetween(startDate, endDate, pageable)
         var memoResponseList = mutableListOf<MemoResponse>()
@@ -60,16 +59,17 @@ class MemoService {
         if (memosList.isEmpty()) return memoResponseList
 
         for (memo: Memos in memosList) {
-            memoResponseList.add(MemoResponse(memo.id, memo.title, memo.text, memo.getStringCreatedAt(), memo.getStringUpdatedAt()))
+            memoResponseList.add(
+                MemoResponse(
+                    memo.id,
+                    memo.title,
+                    memo.text,
+                    localDateTimeToString(memo.createdAt),
+                    localDateTimeToString(memo.updatedAt)
+                )
+            )
         }
 
         return memoResponseList
-    }
-
-    fun checkDateformat(date: String) {
-        val regex = Regex("[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]")
-        val matchResult = regex.matches(date)
-
-        if (!matchResult) throw FormatInvalidException()
     }
 }

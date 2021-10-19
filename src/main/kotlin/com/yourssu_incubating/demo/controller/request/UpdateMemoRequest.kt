@@ -4,8 +4,8 @@ import javax.validation.constraints.NotNull
 
 data class UpdateMemoRequest (
     @field: NotNull
-    var title: String,
+    val title: String,
 
     @field: NotNull
-    var text: String,
+    val text: String,
 )
