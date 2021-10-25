@@ -13,16 +13,16 @@ import javax.persistence.EntityManager
 class MemoMemoryRepository(private val em:EntityManager): MemoRepository {
 
     override fun save(memo: Memo): Memo {
-       em.persist(memo)
+        em.persist(memo)
         return memo
     }
 
     override fun delete(memo_id: Long) {
-       val memo = em.find(Memo::class.java , memo_id)
+        val memo = em.find(Memo::class.java , memo_id)
         em.remove(memo)
     }
 
-    override fun MemoInfoByDate(date: LocalDate, page: Int): List<Memo> {
+    override fun getMemoAfterDate(date: LocalDate, page: Int): List<Memo> {
         val dateTime = date.atTime(LocalTime.now())
         val memoList:List<Memo> = em.createQuery("select m from Memo m where m.createdAt >= :date order by m.createdAt desc", Memo::class.java)
                 .setParameter("date", dateTime)
@@ -46,11 +46,10 @@ class MemoMemoryRepository(private val em:EntityManager): MemoRepository {
         return memo1
     }
 
-    override fun validationCheck(memo:MemoCreateUpdateDto):Boolean{
-        val check:Memo = em.createQuery("select m from Memo m where m.title = :title and m.text = :text", Memo::class.java)
+    override fun checkDuplicatedTitleText(memo:MemoCreateUpdateDto):Boolean{
+        val check = em.createQuery("select m from Memo as m where m.title = :title and m.text = :text", Memo::class.java)
             .setParameter("title", memo.title).setParameter("text",memo.text)
-            .singleResult
-        if (check == null) return false
-        else return true
+            .resultList.stream().findAny()
+        return check.isPresent
     }
 }

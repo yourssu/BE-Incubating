@@ -40,7 +40,7 @@ class MemoController(private val memoService:MemoService) {
     @GetMapping()
     @ApiOperation("메모 날짜 기준 최근순 조회")
     fun MemoInfoByDate(@RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") date:LocalDate, @RequestParam("page") page:Int):List<MemoPreviewDto> {
-        return memoService.MemoInfoByDate(date,page)
+        return memoService.getMemoAfterDate(date,page)
     }
 
     @GetMapping("/{memoId}")

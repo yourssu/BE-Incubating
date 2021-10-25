@@ -51,7 +51,7 @@ class MemoServiceTest {
 
         Assert.assertEquals(responseMemo.title, findByIdMemo.title)
         Assert.assertEquals(responseMemo.text, findByIdMemo.text)
-        Assert.assertEquals(responseMemo.createdAt, Dateformatting(findByIdMemo.createdAt))
+        Assert.assertEquals(responseMemo.createdAt, findByIdMemo.createdAt)
 
     }
 
@@ -71,7 +71,7 @@ class MemoServiceTest {
 
         Assert.assertEquals(responseMemo.title,findByIdMemo.title)
         Assert.assertEquals(responseMemo.text, findByIdMemo.text)
-        Assert.assertEquals(responseMemo.createdAt,Dateformatting(findByIdMemo.createdAt))
+        Assert.assertEquals(responseMemo.createdAt,findByIdMemo.createdAt)
 
     }
 
@@ -100,12 +100,12 @@ class MemoServiceTest {
         val findByIdMemo: Memo = memoRepository.findById(5L)
 
         Assert.assertEquals(result.title,findByIdMemo.title)
-        Assert.assertEquals(result.createdAt,Dateformatting(findByIdMemo.createdAt))
-        Assert.assertEquals(result.updatedAt,Dateformatting(findByIdMemo.updatedAt))
+        Assert.assertEquals(result.createdAt,findByIdMemo.createdAt)
+        Assert.assertEquals(result.updatedAt,findByIdMemo.updatedAt)
     }
 
     @Test
-    fun MemoInfoByDate(){
+    fun getMemoAfterDate(){
         var memoList:ArrayList<Memo> = ArrayList()
 
         var memo1: Memo = Memo(id = 6L, title = "memo1_title", text = "memo1_text")
@@ -118,10 +118,10 @@ class MemoServiceTest {
         var memo3:Memo = Memo(id = 8L, title = "memo3_title", text = "memo3_text")
         memoList.add(memo3)
 
-        `when`(memoRepository.MemoInfoByDate(LocalDate.of(2020,10,15),1)).thenReturn(memoList)
+        `when`(memoRepository.getMemoAfterDate(LocalDate.of(2020,10,15),1)).thenReturn(memoList)
 
-        var resultList :List<MemoPreviewDto> = memoService.MemoInfoByDate(LocalDate.of(2020,10,15),1)
-        var repositoryList: List<Memo> = memoRepository.MemoInfoByDate(LocalDate.of(2020,10,15),1)
+        var resultList :List<MemoPreviewDto> = memoService.getMemoAfterDate(LocalDate.of(2020,10,15),1)
+        var repositoryList: List<Memo> = memoRepository.getMemoAfterDate(LocalDate.of(2020,10,15),1)
 
 
         assertThat(resultList.size).isEqualTo(repositoryList.size)

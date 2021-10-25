@@ -15,9 +15,9 @@ import javax.persistence.EntityManager
 import javax.sql.DataSource
 
 @Configuration
-class ConfigurationBean(private val dataSource: DataSource, private var em: EntityManager) {
+class ConfigurationBean(private val dataSource: DataSource, private val em: EntityManager) {
     @Bean
-    fun memoService():MemoService{ return MemoServiceImpl(memoRepository()) }
+    fun memoService() = MemoServiceImpl(memoRepository())
     @Bean
-    fun memoRepository(): MemoMemoryRepository { return MemoMemoryRepository(em)}
+    fun memoRepository() = MemoMemoryRepository(em)
 }

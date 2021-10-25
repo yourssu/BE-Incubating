@@ -15,24 +15,24 @@ import kotlin.collections.ArrayList
 @Transactional
 open class MemoServiceImpl(private val memoRepository: MemoRepository):MemoService {
     override fun createMemo(memo: MemoCreateUpdateDto): MemoResponseDto {
-        if (memoRepository.validationCheck(memo)){
+        if (memoRepository.checkDuplicatedTitleText(memo)){
             throw java.lang.IllegalStateException("이미 동일한 메모가 존재합니다.")
         } else {
-            var createdMemo: Memo = Memo(title = memo.title, text = memo.text)
+            val createdMemo: Memo = Memo(title = memo.title, text = memo.text)
 
             val save = memoRepository.save(createdMemo)
-            val responseMemo: MemoResponseDto = MemoResponseDto(save)
+            val responseMemo: MemoResponseDto = MemoResponseDto(save.id,save.title,save.text,save.createdAt,save.updatedAt)
             return responseMemo
         }
     }
 
     override fun updateMemo(memo_id: Long, memo: MemoCreateUpdateDto): MemoPreviewDto {
-        if(memoRepository.validationCheck(memo)){
+        if(memoRepository.checkDuplicatedTitleText(memo)){
             throw java.lang.IllegalStateException("이미 동일한 메모가 존재합니다.")
         } else {
             val memo1: Memo = memoRepository.update(memo, memo_id)
 
-            val responseMemo: MemoPreviewDto = MemoPreviewDto(memo1)
+            val responseMemo: MemoPreviewDto = MemoPreviewDto(memo1.id,memo1.title,memo1.createdAt,memo1.updatedAt)
             return responseMemo
         }
     }
@@ -41,11 +41,11 @@ open class MemoServiceImpl(private val memoRepository: MemoRepository):MemoServi
         memoRepository.delete(memo_id)
     }
 
-    override fun MemoInfoByDate(date: LocalDate, page: Int): List<MemoPreviewDto> {
-        var memoList:List<Memo> = memoRepository.MemoInfoByDate(date,page)
+    override fun getMemoAfterDate(date: LocalDate, page: Int): List<MemoPreviewDto> {
+        var memoList:List<Memo> = memoRepository.getMemoAfterDate(date,page)
         val memos:ArrayList<MemoPreviewDto> = ArrayList<MemoPreviewDto>()
         memoList.forEach{
-            memo -> var memoPreview = MemoPreviewDto(memo)
+            memo -> var memoPreview = MemoPreviewDto(memo.id,memo.title,memo.createdAt,memo.updatedAt)
             memos.add(memoPreview)
         }
         return memos
@@ -55,7 +55,7 @@ open class MemoServiceImpl(private val memoRepository: MemoRepository):MemoServi
         val memo: Memo = memoRepository.findById(memo_id)
 
         if(memo != null){
-            return MemoResponseDto(memo)
+            return MemoResponseDto(memo.id,memo.title,memo.text,memo.createdAt,memo.updatedAt)
         } else throw IllegalStateException("해당하는 메모가 존재하지 않습니다.")
     }
 
