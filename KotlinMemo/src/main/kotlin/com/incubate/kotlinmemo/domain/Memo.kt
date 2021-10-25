@@ -14,9 +14,7 @@ class Memo(
     @Column(unique = true)
     var text:String,
     @Column
-//    @JsonSerialize(using = DateSerializer::class)
     var updatedAt:LocalDateTime = LocalDateTime.now(),
     @Column
-//    @JsonSerialize(using = DateSerializer::class)
     val createdAt:LocalDateTime = LocalDateTime.now()
 )
