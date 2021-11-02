@@ -7,7 +7,6 @@ import com.yourssu_incubating.demo.controller.response.SearchByDateMemosResponse
 import com.yourssu_incubating.demo.entity.memo.Memos
 import com.yourssu_incubating.demo.service.MemoService
 import com.yourssu_incubating.demo.utils.FormatUtil.localDateTimeToString
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
 import org.springframework.format.annotation.DateTimeFormat

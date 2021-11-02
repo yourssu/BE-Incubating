@@ -26,7 +26,7 @@ class UpdateMemoTest: BaseControllerTest() {
     }
 
     @Test
-    @DisplayName("404: update memo")
+    @DisplayName("404: memo not found")
     fun updateMemoFail_NOT_FOUND() {
         val request = UpdateMemoRequest("title", "updated Text")
 
@@ -37,6 +37,19 @@ class UpdateMemoTest: BaseControllerTest() {
 
         test.andExpect {
             status { isNotFound() }
+        }
+    }
+
+    @Test
+    @DisplayName("400: update memo request invalid")
+    fun updateMemoFail_BAD_REQUEST() {
+        val test = mockMvc.put("/memos/{memoId}", memoId) {
+            contentType = MediaType.APPLICATION_JSON
+            content = objectMapper.writeValueAsString("title: title")
+        }
+
+        test.andExpect {
+            status { isBadRequest() }
         }
     }
 }

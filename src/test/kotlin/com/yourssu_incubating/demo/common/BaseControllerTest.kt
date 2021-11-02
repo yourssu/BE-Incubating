@@ -12,17 +12,11 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 @AutoConfigureMockMvc
 @SpringBootTest
-class BaseControllerTest {
-
-    @Autowired
-    protected lateinit var mockMvc: MockMvc
-
-    @Autowired
-    protected lateinit var objectMapper: ObjectMapper
-
-    @Autowired
-    protected lateinit var memosRepository: MemosRepository
-
+class BaseControllerTest(
+    protected val mockMvc: MockMvc,
+    protected val objectMapper: ObjectMapper,
+    protected val memosRepository: MemosRepository,
+) {
     val memoId: Long = 1
     val title = "title"
     val text = "text"
