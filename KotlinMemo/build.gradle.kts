@@ -6,6 +6,7 @@ plugins {
     kotlin("jvm") version "1.5.31"
     kotlin("plugin.spring") version "1.5.31"
     kotlin("plugin.jpa") version "1.5.31"
+
 }
 
 group = "com.incubate"
@@ -16,7 +17,10 @@ configurations {
     compileOnly {
         extendsFrom(configurations.annotationProcessor.get())
     }
+
 }
+
+
 
 repositories {
     mavenCentral()
@@ -36,12 +40,13 @@ dependencies {
     testRuntimeOnly ("org.junit.vintage:junit-vintage-engine:5.3.1")
     testImplementation("org.mockito.kotlin:mockito-kotlin:3.2.0")
     testImplementation ("org.mockito:mockito-core:3.8.0")
+    implementation ("me.paulschwarz:spring-dotenv:2.4.1")
 }
 
 tasks.withType<KotlinCompile> {
     kotlinOptions {
         freeCompilerArgs = listOf("-Xjsr305=strict")
-        jvmTarget = "11"
+        jvmTarget = "1.8"
     }
 }
 

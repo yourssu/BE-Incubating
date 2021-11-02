@@ -4,7 +4,7 @@ import com.incubate.kotlinmemo.domain.Memo
 import com.incubate.kotlinmemo.dto.MemoCreateUpdateDto
 import com.incubate.kotlinmemo.dto.MemoPreviewDto
 import com.incubate.kotlinmemo.dto.MemoResponseDto
-import com.incubate.kotlinmemo.repository.MemoMemoryRepository
+import com.incubate.kotlinmemo.repository.MemoRepository
 import com.incubate.kotlinmemo.service.MemoServiceImpl
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Assert
@@ -14,10 +14,17 @@ import org.mockito.*
 import org.mockito.BDDMockito.*
 import org.mockito.Mockito.`when`
 import org.mockito.junit.MockitoJUnitRunner
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Page.empty
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.PageRequest
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.format.DateTimeFormatter
+import java.util.*
 import javax.persistence.EntityManager
+import kotlin.collections.ArrayList
 
 
 @RunWith(MockitoJUnitRunner::class)
@@ -26,15 +33,9 @@ class MemoServiceTest {
     @Mock
     lateinit var em:EntityManager
     @Mock
-    lateinit var memoRepository: MemoMemoryRepository
+    lateinit var memoRepository: MemoRepository
     @InjectMocks
     lateinit var memoService:MemoServiceImpl
-
-    private fun Dateformatting(localDateTime : LocalDateTime):String{
-        val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-        val localDate: String = localDateTime.format(formatter)
-        return localDate
-    }
 
     @Test
     fun createMemo(){
@@ -43,15 +44,15 @@ class MemoServiceTest {
 
         var memo:Memo = Memo(id = 1L, title = "memo_title", text = "memo_text")
 
-        `when`(memoRepository.findById(memo.id)).thenReturn(memo)
+        `when`(memoRepository.findById(memo.id)).thenReturn(Optional.of(memo))
         `when`(memoRepository.save(org.mockito.kotlin.any())).thenReturn(memo)
 
         val responseMemo : MemoResponseDto = memoService.createMemo(memoDto)
         val findByIdMemo = memoRepository.findById(1L)
 
-        Assert.assertEquals(responseMemo.title, findByIdMemo.title)
-        Assert.assertEquals(responseMemo.text, findByIdMemo.text)
-        Assert.assertEquals(responseMemo.createdAt, findByIdMemo.createdAt)
+        Assert.assertEquals(responseMemo.title, findByIdMemo.get().title)
+        Assert.assertEquals(responseMemo.text, findByIdMemo.get().text)
+        Assert.assertEquals(responseMemo.createdAt, findByIdMemo.get().createdAt)
 
     }
 
@@ -63,11 +64,11 @@ class MemoServiceTest {
         var memo2:Memo = Memo(id = 3L, title = "memo_title", text = "memo_text")
 
 
-        `when`(memoRepository.findById(memo1.id)).thenReturn(memo1)
-        `when`(memoRepository.findById(memo2.id)).thenReturn(memo2)
+        `when`(memoRepository.findById(memo1.id)).thenReturn(Optional.of(memo1))
+        `when`(memoRepository.findById(memo2.id)).thenReturn(Optional.of(memo2))
 
         val responseMemo:MemoResponseDto = memoService.MemoInfo(memo1.id)
-        val findByIdMemo:Memo = memoRepository.findById(memo1.id)
+        val findByIdMemo:Memo = memoRepository.findById(memo1.id).get()
 
         Assert.assertEquals(responseMemo.title,findByIdMemo.title)
         Assert.assertEquals(responseMemo.text, findByIdMemo.text)
@@ -80,9 +81,9 @@ class MemoServiceTest {
         var memo:Memo = Memo(id = 4L, title = "memo_title", text = "memo_text")
         memoRepository.save(memo)
 
-        memoRepository.delete(1L)
+        memoRepository.delete(memo)
 
-       verify(memoRepository).delete(anyLong())
+       verify(memoRepository).delete(any(Memo::class.java))
     }
 
     @Test
@@ -93,11 +94,10 @@ class MemoServiceTest {
 
         var updatedMemo:Memo = Memo(id = 5L, title = "update_title", text = "update_text", updatedAt = LocalDateTime.now())
 
-        `when`(memoRepository.findById(memo.id)).thenReturn(updatedMemo)
-        `when`(memoRepository.update(updateDto,5L)).thenReturn(updatedMemo)
+        `when`(memoRepository.findById(memo.id)).thenReturn(Optional.of(updatedMemo))
 
         val result : MemoPreviewDto = memoService.updateMemo(5L,updateDto)
-        val findByIdMemo: Memo = memoRepository.findById(5L)
+        val findByIdMemo: Memo = memoRepository.findById(5L).get()
 
         Assert.assertEquals(result.title,findByIdMemo.title)
         Assert.assertEquals(result.createdAt,findByIdMemo.createdAt)
@@ -105,24 +105,27 @@ class MemoServiceTest {
     }
 
     @Test
-    fun getMemoAfterDate(){
+    fun getMemoAfterCreatedAtByPaging(){
         var memoList:ArrayList<Memo> = ArrayList()
 
-        var memo1: Memo = Memo(id = 6L, title = "memo1_title", text = "memo1_text")
+        val memo1: Memo = Memo(id = 6L, title = "memo1_title", text = "memo1_text")
         memoList.add(memo1)
 
-        var memo2:Memo = Memo(id = 7L, title = "memo2_title", text = "memo2_text")
+        val memo2:Memo = Memo(id = 7L, title = "memo2_title", text = "memo2_text")
         memoList.add(memo2)
 
-
-        var memo3:Memo = Memo(id = 8L, title = "memo3_title", text = "memo3_text")
+        val memo3:Memo = Memo(id = 8L, title = "memo3_title", text = "memo3_text")
         memoList.add(memo3)
 
-        `when`(memoRepository.getMemoAfterDate(LocalDate.of(2020,10,15),1)).thenReturn(memoList)
+        val pageRequest:PageRequest = PageRequest.of(1,5)
+        val memoPage:Page<Memo> = PageImpl(memoList.subList(0,memoList.size),pageRequest,memoList.size.toLong())
 
-        var resultList :List<MemoPreviewDto> = memoService.getMemoAfterDate(LocalDate.of(2020,10,15),1)
-        var repositoryList: List<Memo> = memoRepository.getMemoAfterDate(LocalDate.of(2020,10,15),1)
-
+        `when`(memoRepository.getMemoAfterCreatedAtByPaging(LocalDate.of(2020,1,1).atTime(LocalTime.now()),pageRequest)).thenReturn(memoPage)
+        print(LocalDateTime.now())
+        var resultList :List<MemoPreviewDto> = memoService.getMemoAfterCreatedAtByPaging(LocalDate.of(2020,1,1),1)
+        var repositoryList: Page<Memo> = memoRepository.getMemoAfterCreatedAtByPaging(LocalDate.of(2020,1,1).atTime(
+            LocalTime.now()),pageRequest)
+        print(LocalDateTime.now())
 
         assertThat(resultList.size).isEqualTo(repositoryList.size)
         Assert.assertSame(repositoryList,memoList)

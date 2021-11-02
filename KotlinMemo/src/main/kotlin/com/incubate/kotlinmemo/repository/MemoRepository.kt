@@ -1,15 +1,16 @@
 package com.incubate.kotlinmemo.repository
 
 import com.incubate.kotlinmemo.domain.Memo
-import com.incubate.kotlinmemo.dto.MemoCreateUpdateDto
-import java.time.LocalDate
-import java.util.*
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
+import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
+import org.springframework.data.repository.query.Param
+import java.time.LocalDateTime
 
-interface MemoRepository {
-    fun save(memo:Memo):Memo
-    fun delete(memo_id:Long)
-    fun getMemoAfterDate(date:LocalDate, page:Int):List<Memo>
-    fun findById(memo_id:Long):Memo
-    fun update(memo: MemoCreateUpdateDto, id:Long):Memo
-    fun checkDuplicatedTitleText(memo:MemoCreateUpdateDto):Boolean
+interface MemoRepository:JpaRepository<Memo,Long>{
+    @Query("select m from Memo m where m.createdAt >= :date order by m.createdAt desc")
+    fun getMemoAfterCreatedAtByPaging(@Param("date") date:LocalDateTime, paging: Pageable):Page<Memo>
+    fun findByTitleAndText(title:String, text:String):Memo?
+
 }

@@ -5,18 +5,12 @@ import com.incubate.kotlinmemo.dto.MemoPreviewDto
 import com.incubate.kotlinmemo.dto.MemoResponseDto
 import com.incubate.kotlinmemo.service.MemoService
 import io.swagger.annotations.ApiOperation
-import org.jetbrains.annotations.NotNull
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.format.annotation.DateTimeFormat
-import org.springframework.http.MediaType
-import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.*
-import java.lang.IllegalStateException
 import java.time.LocalDate
 
-@Controller
+@RestController
 @RequestMapping("/memos")
-@ResponseBody
 class MemoController(private val memoService:MemoService) {
 
     @PostMapping()
@@ -39,8 +33,8 @@ class MemoController(private val memoService:MemoService) {
 
     @GetMapping()
     @ApiOperation("메모 날짜 기준 최근순 조회")
-    fun MemoInfoByDate(@RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") date:LocalDate, @RequestParam("page") page:Int):List<MemoPreviewDto> {
-        return memoService.getMemoAfterDate(date,page)
+    fun getMemoAfterCreatedAtByPaging(@RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") date:LocalDate, @RequestParam("page") page:Int):List<MemoPreviewDto> {
+        return memoService.getMemoAfterCreatedAtByPaging(date,page)
     }
 
     @GetMapping("/{memoId}")
