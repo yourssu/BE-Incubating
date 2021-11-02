@@ -29,7 +29,7 @@ class SearchByDateMemoTest: BaseControllerTest() {
     }
 
     @Test
-    @DisplayName("400: date format invalid")
+    @DisplayName("400: invalid date format")
     fun searchByDateTestFail_BAD_REQUEST() {
         generateMemo()
         generateMemo()

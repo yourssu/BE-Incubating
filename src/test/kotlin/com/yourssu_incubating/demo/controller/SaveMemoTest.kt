@@ -21,6 +21,7 @@ class SaveMemoTest: BaseControllerTest() {
             status { isCreated() }
             jsonPath("title") { request.title }
             jsonPath("text") { request.text }
+            jsonPath("id") { isNotEmpty() }
         }
     }
 
