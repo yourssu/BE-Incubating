@@ -19,7 +19,7 @@ class DeleteMemoTest: BaseControllerTest() {
     }
 
     @Test
-    @DisplayName("404: memo not found")
+    @DisplayName("404: memo not found (id를 찾을 수 없음)")
     fun deleteMemoFail_NOT_FOUND() {
         val test = mockMvc.delete("/memos/$memoId", memoId)
         test.andExpect {
