@@ -13,7 +13,6 @@ class MemoEntityTest {
 
         val memo = Memos(title = title, text = text)
 
-        assertThat(memo.id).isNot(null)
         assertThat(memo.title).isEqualTo(title)
         assertThat(memo.text).isEqualTo(text)
     }

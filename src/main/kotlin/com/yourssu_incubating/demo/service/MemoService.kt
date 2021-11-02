@@ -18,10 +18,9 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 
 @Service
-class MemoService {
-
-    @Autowired
-    private lateinit var memoRepository: MemosRepository
+class MemoService(
+    private var memoRepository: MemosRepository,
+) {
 
     @Transactional
     fun saveMemo(requestDto: SaveMemoRequest): Memos {

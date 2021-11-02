@@ -2,6 +2,7 @@ package com.yourssu_incubating.demo.service
 
 import com.yourssu_incubating.demo.common.BaseServiceTest
 import com.yourssu_incubating.demo.controller.request.SaveMemoRequest
+import com.yourssu_incubating.demo.controller.request.UpdateMemoRequest
 import com.yourssu_incubating.demo.entity.memo.Memos
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -15,7 +16,6 @@ import org.springframework.data.repository.findByIdOrNull
 class MemoServiceTest: BaseServiceTest() {
 
     @Test
-    @DisplayName("201: 메모 저장 성공")
     fun saveMemoSuccess() {
         given(memosRepository.save(any()))
             .willReturn(Memos())
@@ -28,15 +28,17 @@ class MemoServiceTest: BaseServiceTest() {
         val result = memoService.saveMemo(request)
 
         assertNotNull(result);
-
-        assertTrue(result.title == title)
-        assertTrue(result.text == text)
     }
 
     @Test
     fun updateMemoTest() {
         given(memosRepository.findByIdOrNull(any()))
             .willReturn(Memos())
+
+        val updatedTitle = "updated title"
+        val updatedText = "updated text"
+
+        val request = UpdateMemoRequest(title = updatedTitle, text = updatedText)
     }
 
     @Test
@@ -57,6 +59,4 @@ class MemoServiceTest: BaseServiceTest() {
             .willReturn(mutableListOf<Memos>())
 
     }
-
-
 }
