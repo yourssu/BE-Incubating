@@ -25,26 +25,19 @@ class MemoIntegrationTest {
 
         val mvc: MockMvc = MockMvcBuilders.standaloneSetup(MemoController(memoService)).build()
 
-        val objectMapper: ObjectMapper = jacksonObjectMapper()
+        val integrationTestElements = IntegrationTestElements()
 
         @Test
         fun createMemo(){
-                given(memoService.createMemo(memoDto())).willReturn(MemoResponseDto(1L,"memo_title","memo_text",
+                given(memoService.createMemo(integrationTestElements.memoDto)).willReturn(MemoResponseDto(1L,"memo_title","memo_text",
                         LocalDateTime.now(), LocalDateTime.now()))
 
                 mvc.perform(MockMvcRequestBuilders.post("/memos")
-                        .contentType(MediaType.APPLICATION_JSON).content(mapper(memoDto())).accept(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON).content(integrationTestElements.mapper(integrationTestElements.memoDto)).accept(MediaType.APPLICATION_JSON))
                         .andDo(MockMvcResultHandlers.print())
                         .andExpect(MockMvcResultMatchers.status().isOk())
                         .andExpect(MockMvcResultMatchers.jsonPath("title").value("memo_title"))
                         .andExpect(MockMvcResultMatchers.jsonPath("text").value("memo_text"))
-        }
-
-        private fun mapper(dto:MemoCreateUpdateDto):String{
-                return objectMapper.writeValueAsString(dto)
-        }
-        private fun memoDto():MemoCreateUpdateDto{
-                return MemoCreateUpdateDto("memo_title", "memo_text")
         }
 
 }

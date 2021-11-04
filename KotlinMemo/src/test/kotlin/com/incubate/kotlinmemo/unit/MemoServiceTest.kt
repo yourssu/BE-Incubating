@@ -13,6 +13,7 @@ import org.junit.runner.RunWith
 import org.mockito.*
 import org.mockito.BDDMockito.*
 import org.mockito.Mockito.`when`
+import org.mockito.Mockito.anyByte
 import org.mockito.junit.MockitoJUnitRunner
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Page.empty
@@ -29,7 +30,8 @@ import kotlin.collections.ArrayList
 
 @RunWith(MockitoJUnitRunner::class)
 class MemoServiceTest {
-
+    @Mock
+    lateinit var localDate:LocalDate
     @Mock
     lateinit var em:EntityManager
     @Mock
@@ -120,12 +122,11 @@ class MemoServiceTest {
         val pageRequest:PageRequest = PageRequest.of(1,5)
         val memoPage:Page<Memo> = PageImpl(memoList.subList(0,memoList.size),pageRequest,memoList.size.toLong())
 
-        `when`(memoRepository.getMemoAfterCreatedAtByPaging(LocalDate.of(2020,1,1).atTime(LocalTime.now()),pageRequest)).thenReturn(memoPage)
-        print(LocalDateTime.now())
+        `when`(memoRepository.getMemoAfterCreatedAtByPaging(LocalDateTime.of(2020,1,1,1,1),pageRequest)).thenReturn(memoPage)
+        `when`(localDate.atTime()).thenReturn(LocalDateTime.of(2020,1,1,1,1))
+//시간을 모킹하기
         var resultList :List<MemoPreviewDto> = memoService.getMemoAfterCreatedAtByPaging(LocalDate.of(2020,1,1),1)
-        var repositoryList: Page<Memo> = memoRepository.getMemoAfterCreatedAtByPaging(LocalDate.of(2020,1,1).atTime(
-            LocalTime.now()),pageRequest)
-        print(LocalDateTime.now())
+        var repositoryList: Page<Memo> = memoRepository.getMemoAfterCreatedAtByPaging(LocalDateTime.of(2020,1,1,1,1),pageRequest)
 
         assertThat(resultList.size).isEqualTo(repositoryList.size)
         Assert.assertSame(repositoryList,memoList)
