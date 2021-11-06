@@ -6,5 +6,9 @@ import java.time.LocalDateTime
 
 
 interface MemosRepository: JpaRepository<Memos, Long> {
-    fun findByCreatedAtBetween(startDate: LocalDateTime, endDate: LocalDateTime, pageable: Pageable): List<Memos>
+    fun findByCreatedAtBetween(
+        startDate: LocalDateTime,
+        endDate: LocalDateTime,
+        pageable: Pageable
+    ): List<Memos>
 }
