@@ -38,7 +38,6 @@ class MemoServiceTest {
     lateinit var memoRepository: MemoRepository
     @InjectMocks
     lateinit var memoService:MemoServiceImpl
-
     @Test
     fun createMemo(){
 
