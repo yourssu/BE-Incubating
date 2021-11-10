@@ -19,9 +19,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Page.empty
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.LocalTime
+import java.time.*
 import java.time.format.DateTimeFormatter
 import java.util.*
 import javax.persistence.EntityManager
@@ -30,8 +28,6 @@ import kotlin.collections.ArrayList
 
 @RunWith(MockitoJUnitRunner::class)
 class MemoServiceTest {
-    @Mock
-    lateinit var localDate:LocalDate
     @Mock
     lateinit var em:EntityManager
     @Mock
@@ -109,25 +105,26 @@ class MemoServiceTest {
     fun getMemoAfterCreatedAtByPaging(){
         var memoList:ArrayList<Memo> = ArrayList()
 
-        val memo1: Memo = Memo(id = 6L, title = "memo1_title", text = "memo1_text")
+        val memo1 = Memo(id = 6L, title = "memo1_title", text = "memo1_text")
         memoList.add(memo1)
 
-        val memo2:Memo = Memo(id = 7L, title = "memo2_title", text = "memo2_text")
+        val memo2 = Memo(id = 7L, title = "memo2_title", text = "memo2_text")
         memoList.add(memo2)
 
-        val memo3:Memo = Memo(id = 8L, title = "memo3_title", text = "memo3_text")
+        val memo3 = Memo(id = 8L, title = "memo3_title", text = "memo3_text")
         memoList.add(memo3)
 
         val pageRequest:PageRequest = PageRequest.of(1,5)
         val memoPage:Page<Memo> = PageImpl(memoList.subList(0,memoList.size),pageRequest,memoList.size.toLong())
+        `when`(memoRepository.getMemoAfterCreatedAtByPaging(LocalDateTime.of(2020,1,1,0,0),pageRequest)).thenReturn(memoPage)
 
-        `when`(memoRepository.getMemoAfterCreatedAtByPaging(LocalDateTime.of(2020,1,1,1,1),pageRequest)).thenReturn(memoPage)
-        `when`(localDate.atTime()).thenReturn(LocalDateTime.of(2020,1,1,1,1))
-//시간을 모킹하기
+
         var resultList :List<MemoPreviewDto> = memoService.getMemoAfterCreatedAtByPaging(LocalDate.of(2020,1,1),1)
-        var repositoryList: Page<Memo> = memoRepository.getMemoAfterCreatedAtByPaging(LocalDateTime.of(2020,1,1,1,1),pageRequest)
+        var repositoryList: Page<Memo> = memoRepository.getMemoAfterCreatedAtByPaging(LocalDateTime.of(2020,1,1,0,0),pageRequest)
+        assertThat(resultList.size).isEqualTo(repositoryList.content.size)
+        Assert.assertSame(repositoryList.content.get(0),memoList.get(0))
+        Assert.assertSame(repositoryList.content.get(1),memoList.get(1))
+        Assert.assertSame(repositoryList.content.get(2),memoList.get(2))
 
-        assertThat(resultList.size).isEqualTo(repositoryList.size)
-        Assert.assertSame(repositoryList,memoList)
     }
 }
