@@ -5,11 +5,13 @@ import com.incubate.kotlinmemo.dto.MemoCreateUpdateDto
 import com.incubate.kotlinmemo.dto.MemoPreviewDto
 import com.incubate.kotlinmemo.dto.MemoResponseDto
 import com.incubate.kotlinmemo.repository.MemoRepository
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
+import java.time.Clock
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -19,6 +21,7 @@ import kotlin.collections.ArrayList
 @Service
 @Transactional
 open class MemoServiceImpl(private val memoRepository: MemoRepository):MemoService {
+
     override fun createMemo(memo: MemoCreateUpdateDto): MemoResponseDto {
         if (memoRepository.findByTitleAndText(memo.title,memo.text) != null){
             throw java.lang.IllegalStateException("이미 동일한 메모가 존재합니다.")
@@ -51,8 +54,7 @@ open class MemoServiceImpl(private val memoRepository: MemoRepository):MemoServi
     }
 
     override fun getMemoAfterCreatedAtByPaging(date: LocalDate, page: Int): List<MemoPreviewDto> {
-        val dateTime = date.atTime(LocalTime.now())
-        print("dateTime : "+dateTime)
+        val dateTime = date.atTime(0,0)
         val pageRequest:PageRequest = PageRequest.of(page,5,)
         var memoList:Page<Memo> = memoRepository.getMemoAfterCreatedAtByPaging(dateTime,pageRequest)
         val memos:ArrayList<MemoPreviewDto> = ArrayList<MemoPreviewDto>()
