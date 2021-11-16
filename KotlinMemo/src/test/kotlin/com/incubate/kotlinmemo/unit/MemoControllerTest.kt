@@ -1,6 +1,6 @@
 package com.incubate.kotlinmemo.unit
 
-import com.incubate.kotlinmemo.Integration.TestElements
+import com.incubate.kotlinmemo.TestElements
 import com.incubate.kotlinmemo.controller.MemoController
 import com.incubate.kotlinmemo.dto.MemoPreviewDto
 import com.incubate.kotlinmemo.dto.MemoResponseDto
@@ -9,7 +9,6 @@ import org.junit.Test
 import org.mockito.Mockito
 import org.mockito.kotlin.given
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
-import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
@@ -18,7 +17,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import java.time.LocalDate
 import java.time.LocalDateTime
-import javax.transaction.Transactional
 
 
 @WebMvcTest(controllers = [MemoController::class])
@@ -76,7 +74,7 @@ class MemoControllerTest {
 
         @Test
         fun getMemoAfterCreatedAtByPaging(){
-                given(memoService.getMemoAfterCreatedAtByPaging(LocalDate.of(2020,1,1),1)).willReturn(integrationTestElements.memoList)
+                given(memoService.findByCreatedAtGreaterThanEqualOrderByCreatedAtDesc(LocalDate.of(2020,1,1),1)).willReturn(integrationTestElements.memoList)
 
                 mvc.perform(MockMvcRequestBuilders.get("/memos?date=2020-01-01&page=1"))
                         .andDo(MockMvcResultHandlers.print())

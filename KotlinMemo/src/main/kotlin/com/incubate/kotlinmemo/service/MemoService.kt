@@ -10,7 +10,7 @@ interface MemoService {
     fun createMemo(memo:MemoCreateUpdateDto): MemoResponseDto
     fun updateMemo(memo_id:Long, memo:MemoCreateUpdateDto): MemoPreviewDto
     fun deleteMemo(memo_id:Long)
-    fun getMemoAfterCreatedAtByPaging(date:LocalDate, page:Int): List<MemoPreviewDto>
+    fun findByCreatedAtGreaterThanEqualOrderByCreatedAtDesc(date:LocalDate, page:Int): List<MemoPreviewDto>
     fun MemoInfo(memo_id: Long):MemoResponseDto
 
 }

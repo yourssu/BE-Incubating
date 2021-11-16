@@ -53,12 +53,11 @@ open class MemoServiceImpl(private val memoRepository: MemoRepository):MemoServi
         memoRepository.delete(memo)
     }
 
-    override fun getMemoAfterCreatedAtByPaging(date: LocalDate, page: Int): List<MemoPreviewDto> {
-        val dateTime = date.atTime(0,0)
-        val pageRequest:PageRequest = PageRequest.of(page,5,)
-        var memoList:Page<Memo> = memoRepository.getMemoAfterCreatedAtByPaging(dateTime,pageRequest)
+    override fun findByCreatedAtGreaterThanEqualOrderByCreatedAtDesc(date: LocalDate, page: Int): List<MemoPreviewDto> {
+        val dateTime:LocalDateTime = date.atTime(0,0)
+        val pageRequest:PageRequest = PageRequest.of(page-1,5)
+        var memoList:Page<Memo> = memoRepository.findByCreatedAtGreaterThanEqualOrderByCreatedAtDesc(dateTime,pageRequest)
         val memos:ArrayList<MemoPreviewDto> = ArrayList<MemoPreviewDto>()
-
         memoList.content.forEach{
             memo -> var memoPreview = MemoPreviewDto(memo.id,memo.title,memo.createdAt,memo.updatedAt)
             memos.add(memoPreview)

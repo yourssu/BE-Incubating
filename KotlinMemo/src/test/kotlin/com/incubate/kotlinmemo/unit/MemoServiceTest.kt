@@ -29,8 +29,6 @@ import kotlin.collections.ArrayList
 @RunWith(MockitoJUnitRunner::class)
 class MemoServiceTest {
     @Mock
-    lateinit var em:EntityManager
-    @Mock
     lateinit var memoRepository: MemoRepository
     @InjectMocks
     lateinit var memoService:MemoServiceImpl
@@ -49,7 +47,6 @@ class MemoServiceTest {
 
         Assert.assertEquals(responseMemo.title, findByIdMemo.get().title)
         Assert.assertEquals(responseMemo.text, findByIdMemo.get().text)
-        Assert.assertEquals(responseMemo.createdAt, findByIdMemo.get().createdAt)
 
     }
 
@@ -114,13 +111,12 @@ class MemoServiceTest {
         val memo3 = Memo(id = 8L, title = "memo3_title", text = "memo3_text")
         memoList.add(memo3)
 
-        val pageRequest:PageRequest = PageRequest.of(1,5)
+        val pageRequest:PageRequest = PageRequest.of(0,5)
         val memoPage:Page<Memo> = PageImpl(memoList.subList(0,memoList.size),pageRequest,memoList.size.toLong())
-        `when`(memoRepository.getMemoAfterCreatedAtByPaging(LocalDateTime.of(2020,1,1,0,0),pageRequest)).thenReturn(memoPage)
+        `when`(memoRepository.findByCreatedAtGreaterThanEqualOrderByCreatedAtDesc(LocalDateTime.of(2020,1,1,0,0),pageRequest)).thenReturn(memoPage)
 
-
-        var resultList :List<MemoPreviewDto> = memoService.getMemoAfterCreatedAtByPaging(LocalDate.of(2020,1,1),1)
-        var repositoryList: Page<Memo> = memoRepository.getMemoAfterCreatedAtByPaging(LocalDateTime.of(2020,1,1,0,0),pageRequest)
+        var resultList :List<MemoPreviewDto> = memoService.findByCreatedAtGreaterThanEqualOrderByCreatedAtDesc(LocalDate.of(2020,1,1),1)
+        var repositoryList: Page<Memo> = memoRepository.findByCreatedAtGreaterThanEqualOrderByCreatedAtDesc(LocalDateTime.of(2020,1,1,0,0),pageRequest)
         assertThat(resultList.size).isEqualTo(repositoryList.content.size)
         Assert.assertSame(repositoryList.content.get(0),memoList.get(0))
         Assert.assertSame(repositoryList.content.get(1),memoList.get(1))
